@@ -47,3 +47,12 @@ class Stack:
         Boolean - true if empty
         """
         return not self.__data 
+    
+    def __len__(self):
+        """
+        len - return number of items
+
+        Returns: 
+        Int - number of items in the stack
+        """
+        return len(self.__data)
