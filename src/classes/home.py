@@ -18,4 +18,4 @@ class Home(Node):
         Returns: 
         Bool - False unless all stones are home, otherwise True
         """
-        return False if len(self.stones) < self.allStonesHome else True  
+        return False if len(self.stones) < self.sumOfAllStones else True  
