@@ -1,4 +1,4 @@
-from .player import Player
+from src.classes.player import Player
 
 class AI(Player):
     def __init__(self):
