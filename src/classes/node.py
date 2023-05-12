@@ -1,4 +1,4 @@
-from stack import Stack
+from src.classes.stack import Stack
 
 class Node:
     """

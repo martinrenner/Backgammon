@@ -1,4 +1,4 @@
-from abc import ABC #abstract class
+from abc import ABC,abstractmethod #abstract class
 
 class Player(ABC):
     def __init__(self):

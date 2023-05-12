@@ -1,4 +1,4 @@
-from node import Node
+from src.classes.node import Node
 
 class Home(Node):
     def __init__(self, sumOfAllStones = 15):
