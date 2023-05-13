@@ -43,19 +43,3 @@ class Node:
         Int - number of stones in the stack
         """
         return len(self.stones)
-    
-
-#---------------------------------------------------------
-#                       TEST DATA
-#---------------------------------------------------------
-if __name__ == "__main__":
-    test_node = Node()
-    assert test_node.isEmpty() == True, "Node should be empty"
-    assert (len(test_node) == 0), "Node should be empty"
-    test_node.push("TEST")
-    assert test_node.isEmpty() == False, "Node should not be empty"
-    assert (len(test_node) == 1), "Node should have 1 stone"
-    test_node.push("TEST2")
-    test_node.push("TEST3")
-    assert (len(test_node) == 3), "Node should have 3 stones"
-    assert (len(test_node) != 2), "Number of added stones should not be 2 stones"

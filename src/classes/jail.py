@@ -1,6 +1,10 @@
 from src.classes.node import Node
 
 class Jail(Node):
+    """
+    Jail class
+    """
+
     def __init__(self):
         """
         Constructor - initialize home
@@ -9,7 +13,7 @@ class Jail(Node):
 
     def pop(self):
         """
-        pop - pops stone from jail
+        Pop - pops stone from jail
 
         Returns: 
         Any - removed item
