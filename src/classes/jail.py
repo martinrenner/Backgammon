@@ -1,8 +1,17 @@
 from src.classes.node import Node
 
-class Home(Node):
+class Jail(Node):
     def __init__(self):
-        pass
+        """
+        Constructor - initialize home
+        """
+        super().__init__()
 
-    def pop(self, spike):
-        pass
+    def pop(self):
+        """
+        pop - pops stone from jail
+
+        Returns: 
+        Any - removed item
+        """
+        return super().stones.pop()
