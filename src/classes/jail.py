@@ -18,4 +18,4 @@ class Jail(Node):
         Returns: 
         Any - removed item
         """
-        return super().stones.pop()
+        return self.stones.pop()

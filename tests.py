@@ -1,5 +1,6 @@
 from src.classes.node import Node
 from src.classes.home import Home
+from src.classes.jail import Jail
 
 #---------------------------------------------------------
 #                       TEST DATA NODE
@@ -33,3 +34,21 @@ if __name__ == "__main__":
     assert test_home.allStonesHome() == True, "All stones should be home"
     assert (len(test_home) == 3), "Home should have 3 stones"
     assert (len(test_home) != 2), "Number of added stones should not be 2 stones"
+
+#---------------------------------------------------------
+#                       TEST DATA JAIL
+#---------------------------------------------------------
+if __name__ == "__main__":
+    test_jail = Jail()
+    assert test_jail.isEmpty() == True, "Jail should be empty"
+    assert (len(test_jail) == 0), "Jail should be empty"
+    test_jail.push("TEST")
+    assert test_jail.isEmpty() == False, "Jail should not be empty"
+    assert (len(test_jail) == 1), "Jail should have 1 stone"
+    test_jail.pop()
+    assert test_jail.isEmpty() == True, "Jail should be empty"
+    assert (len(test_jail) == 0), "Jail should be empty"
+    test_jail.push("TEST2")
+    test_jail.push("TEST3")
+    assert (len(test_jail) == 2), "Jail should have 3 stones"
+    assert (len(test_jail) != 3), "Jail of added stones should not be 2 stones"
