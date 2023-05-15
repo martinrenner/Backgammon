@@ -25,10 +25,7 @@ class Node:
 
     def isEmpty(self):
         """
-        Push - push stone to the stack of selected node
-
-        Parameters:
-        stone (Any): stone to be added into stack
+        IsEmpty - determines whether node is empty or not
 
         Returns: 
         Bool - False if empty, True if not empty
