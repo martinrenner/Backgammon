@@ -44,7 +44,7 @@ class Backgammon:
                 self.game_layout(rolled)
                 possible_moves = self.all_possible_moves(rolled)
                 if possible_moves == []:
-                    activePlayer = activePlayer.oppositePlayer
+                    break
 
                 rolled = activePlayer.turn(possible_moves, rolled)
 
