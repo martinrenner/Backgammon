@@ -5,11 +5,20 @@ class Node:
     Node class
     """
 
-    def __init__(self):
+    def __init__(self, index):
         """
         Constructor - initialize node
         """
-        self.stones = Stack()
+        self._stones = Stack()
+        self._index = index
+
+    @property
+    def stones(self):
+        return self._stones
+    
+    @property
+    def index(self):
+        return self._index
 
     def push(self, stone):
         """
