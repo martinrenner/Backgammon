@@ -1,24 +1,41 @@
 from abc import ABC,abstractmethod #abstract class
+from src.classes.jail import Jail
+from src.classes.home import Home
 
 class Player(ABC):
-    def __init__(self):
-        self._color = None
+    def __init__(self, increase, symbol, color):
         self._spikes = []
         self._possibleMoves = []
-        self._opositPlayer = None
-        self._home = None
+        self._oppositePlayer = None
+        self._home = Home()
+        self._jail = Jail()
+        self._increase = increase
+        self._symbol = symbol
+        self._color = color
 
     @property
     def home(self):
         return self._home
+    
+    @property
+    def jail(self):
+        return self._jail
+    
+    @property
+    def oppositePlayer(self):
+        return self._oppositePlayer
 
     @property
     def color(self):
-        return self._color
+        return self._color.name
+    
+    @property
+    def symbol(self):
+        return self._symbol
 
-    @home.setter
-    def home(self, node):
-        self._home = node
+    @oppositePlayer.setter
+    def oppositePlayer(self, player):
+        self._oppositePlayer = player
 
     @color.setter
     def color(self, color):
