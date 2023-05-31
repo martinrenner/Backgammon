@@ -3,15 +3,31 @@ from src.classes.jail import Jail
 from src.classes.home import Home
 
 class Player(ABC):
-    def __init__(self, increase, symbol, color):
+    def __init__(self, name, increase, symbol, color, min, max, toHomeArea):
         self._spikes = []
-        self._possibleMoves = []
-        self._oppositePlayer = None
+        self._last_round_moves = ""
+        self._name = name
+        self._opposite_player = None
         self._home = Home()
         self._jail = Jail()
         self._increase = increase
         self._symbol = symbol
         self._color = color
+        self._min = min
+        self._max = max
+        self._toHomeArea = toHomeArea
+
+    @property
+    def name(self):
+        return self._name
+    
+    @property
+    def last_round_moves(self):
+        return self._last_round_moves
+
+    @property
+    def spikes(self):
+        return self._spikes
 
     @property
     def home(self):
@@ -22,8 +38,8 @@ class Player(ABC):
         return self._jail
     
     @property
-    def oppositePlayer(self):
-        return self._oppositePlayer
+    def opposite_player(self):
+        return self._opposite_player
 
     @property
     def color(self):
@@ -32,14 +48,34 @@ class Player(ABC):
     @property
     def symbol(self):
         return self._symbol
+    
+    @property
+    def increase(self):
+        return self._increase
 
-    @oppositePlayer.setter
-    def oppositePlayer(self, player):
-        self._oppositePlayer = player
+    @property
+    def min(self):
+        return self._min
+    
+    @property
+    def max(self):
+        return self._max
+    
+    @property
+    def toHomeArea(self):
+        return self._toHomeArea
+
+    @opposite_player.setter
+    def opposite_player(self, player):
+        self._opposite_player = player
 
     @color.setter
     def color(self, color):
         self._color = color
+
+    @last_round_moves.setter
+    def last_round_moves(self, move):
+        self._last_round_moves = move
 
     def addSpike(self, spike):
         self._spikes.append(spike)
@@ -47,11 +83,14 @@ class Player(ABC):
     def popSpike(self, spike):
         self._spikes.remove(spike)
 
-    @abstractmethod
-    def moveToHome(self, stone):
-        ...
+    def resetLastRoundMove(self):
+        self._last_round_moves = ""
 
-    @abstractmethod
-    def moveStone(self):
-        ...
+    # @abstractmethod
+    # def moveToHome(self, stone):
+    #     ...
+
+    # @abstractmethod
+    # def moveStone(self):
+    #     ...
     

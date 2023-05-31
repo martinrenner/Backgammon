@@ -20,11 +20,22 @@ class Jail(Node):
         Returns: 
         Any - removed item
         """
-        return self.stones.pop()
+        stone = self.stones.pop()
+        stone.player.popSpike(self._index)
+        return stone
+    
+    def peek(self):
+        """
+        Peek - returns the item at the top of jail
+
+        Returns:
+        Any - last added item
+        """
+        return self.stones.peek()
     
     def __str__(self):
         try:
             player = self.stones.peek().player
-            return f"Jail - {colored((player.symbol) * len(self.stones), player.color)}"
+            return f"Jail - {colored((player.symbol) * len(self.stones), player.color)} - ({len(self.stones)})"
         except:
             return f"Jail - "
