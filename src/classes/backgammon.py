@@ -39,8 +39,8 @@ class Backgammon:
             self.player_two = Human("PLAYER 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
         elif mode == 2:
             # Player vs AI
-            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, 24, -1, [18,19,20,21,22,23,"H"])
-            self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, -1, 24, [0,1,2,3,4,5,"H"])
+            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, -1, 24, [18,19,20,21,22,23,"H"])
+            self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
         else:
             exit()
 
@@ -64,8 +64,11 @@ class Backgammon:
                 self.game_layout(rolled, current_player)
                 possible_moves = self.all_possible_moves(rolled, current_player)
                 if not possible_moves:
+                    current_player.last_round_moves += "[No possible move]"
                     break
                 from_spike, roll_choice, to_spike = current_player.turn(possible_moves)
+                print(current_player.last_round_moves)
+                current_player.last_round_moves += f"[{from_spike}, {roll_choice}, {to_spike}], "
                 rolled.remove(roll_choice)
                 self.move(current_player, from_spike, to_spike)
                 if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
@@ -73,6 +76,7 @@ class Backgammon:
             if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
                 break
             current_player = current_player.oppositePlayer
+            current_player.resetLastRoundMove()
         self.end_statistics()
 
     def menu(self):
@@ -139,6 +143,10 @@ class Backgammon:
         print(self.player_one.home)
         print("- TURN ---------------------------------")
         print(f"{colored(current_player.name, current_player.color)}")
+        if self.player_one != current_player:
+            print(f"Opponents history: {self.player_one.last_round_moves:}")
+        else:
+            print(f"Opponents history: {self.player_two.last_round_moves:}")
         print(f"ROLL: {rolled}")
 
     def debug(self):
@@ -237,8 +245,8 @@ class Backgammon:
             if(peek.player != current_player):
                 stone = self.spike_list[to_spike].pop()
                 current_player.oppositePlayer.jail.push(stone)
-        except Exception as err:
-            print(f"Unexpected {err=}, {type(err)=}")
+        except:
+            pass
 
         if(from_spike == "J"):
             stone = current_player.jail.pop()
@@ -264,5 +272,5 @@ class Backgammon:
         print("Player1:")
         print("Player2:")
         input("Press any key...")
-        self.menu()
+        self.run()
         

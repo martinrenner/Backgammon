@@ -5,6 +5,7 @@ from src.classes.home import Home
 class Player(ABC):
     def __init__(self, name, increase, symbol, color, min, max, toHomeArea):
         self._spikes = []
+        self._last_round_moves = ""
         self._name = name
         self._opposite_player = None
         self._home = Home()
@@ -19,6 +20,10 @@ class Player(ABC):
     @property
     def name(self):
         return self._name
+    
+    @property
+    def last_round_moves(self):
+        return self._last_round_moves
 
     @property
     def spikes(self):
@@ -68,11 +73,18 @@ class Player(ABC):
     def color(self, color):
         self._color = color
 
+    @last_round_moves.setter
+    def last_round_moves(self, move):
+        self._last_round_moves = move
+
     def addSpike(self, spike):
         self._spikes.append(spike)
     
     def popSpike(self, spike):
         self._spikes.remove(spike)
+
+    def resetLastRoundMove(self):
+        self._last_round_moves = ""
 
     # @abstractmethod
     # def moveToHome(self, stone):
