@@ -2,8 +2,8 @@ from src.classes.player import Player
 from random import choice
 
 class AI(Player):
-    def __init__(self, increase, symbol, color, min, max):
-        super().__init__(increase, symbol, color, min, max)
+    def __init__(self, name, increase, symbol, color, min, max, toHomeArea):
+        super().__init__(name, increase, symbol, color, min, max, toHomeArea)
     
     def turn(self, possible_moves):
         #FROM ALL POSSIBLE MOVES RANDOM PICK

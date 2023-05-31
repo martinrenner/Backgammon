@@ -9,7 +9,8 @@ from os import system
 from termcolor import colored
 
 NUM_SPIKES = 24
-STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
+#STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
+STONES_LAYOUT = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,5,0,0,0]
 
 class Backgammon:
     """
@@ -35,12 +36,12 @@ class Backgammon:
         self.clear_console()
         if mode == 1:
             # Player vs Player
-            self.player_one = Human("+", "X", Colors.red, 0, 23)
-            self.player_two = Human("-", "Y", Colors.blue, 23, 0)
+            self.player_one = Human("Player 1", "+", "X", Colors.red, -1, 24, [17,18,19,20,21,22,"H"])
+            self.player_two = Human("Player 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
         elif mode == 2:
             # Player vs AI
-            self.player_one = Human("+", "X", Colors.red, 23, 0)
-            self.player_two = AI("-", "Y", Colors.blue, 0, 23)
+            self.player_one = Human("Player 1", "+", "X", Colors.red, 24, -1, [17,18,19,20,21,22,"H"])
+            self.player_two = AI("Player 3", "-", "Y", Colors.blue, -1, 24, [0,1,2,3,4,5,"H"])
         else:
             exit()
 
@@ -173,7 +174,7 @@ class Backgammon:
         # Check jail
         if not current_player.jail.isEmpty():
             for roll in unique_rolls:
-                destination_index = eval(str(current_player.min - 1) + current_player.increase + str(roll))
+                destination_index = eval(str(current_player.min) + current_player.increase + str(roll))
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
                     try:
                         player = self.spike_list[destination_index].peek().player
@@ -184,8 +185,10 @@ class Backgammon:
             return possible_moves
 
         # Check home
-        if all((i <= eval(str(current_player.max) + current_player.increase + str(-6)) or i == 'H') for i in unique_spikes):
+        if all((i in current_player.toHomeArea) for i in unique_spikes):
             for index in unique_spikes:
+                if(index == "H"):
+                    continue
                 for roll in unique_rolls:
                     destination_index = eval(str(index) + current_player.increase + str(roll))
                     # is in range
@@ -194,6 +197,8 @@ class Backgammon:
 
         # Normal move
         for index in unique_spikes:
+            if(index == "H"):
+                continue
             for roll in unique_rolls:
                 destination_index = eval(str(index) + current_player.increase + str(roll))
                 # is in range

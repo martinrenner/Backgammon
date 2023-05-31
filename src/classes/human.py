@@ -1,8 +1,8 @@
 from src.classes.player import Player
 
 class Human(Player):
-    def __init__(self, increase, symbol, color, min, max):
-        super().__init__(increase, symbol, color, min, max)
+    def __init__(self, name, increase, symbol, color, min, max, toHomeArea):
+        super().__init__(name, increase, symbol, color, min, max, toHomeArea)
 
     #possible_moves je list, kazdy prvek je list [z jakeho spiku, posun o kolik]
     def turn(self, possible_moves):
@@ -13,6 +13,7 @@ class Human(Player):
             possibilities += f"[{i}] {start} -> {end}, "
             i += 1
         print(possibilities)
+        print(self.name)
         choice = input("CHOOSE POSSIBLE MOVE: ")
         while not ((int)(choice) >= 0 and (int)(choice) < i):
             choice = input(f"Invalid choice. Choose option (0-{i-1}): ")
