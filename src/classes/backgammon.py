@@ -5,7 +5,7 @@ from src.classes.stone import Stone
 from src.classes.colors import Colors
 from src.classes.dice import Dice
 from sys import exit
-from os import system
+from os import system, name
 from termcolor import colored
 
 NUM_SPIKES = 24
@@ -106,7 +106,13 @@ class Backgammon:
         Returns:
         None
         """
-        system('cls')
+        # for windows
+        if name == 'nt':
+            _ = system('cls')
+    
+        # for mac and linux(here, os.name is 'posix')
+        else:
+            _ = system('clear')
 
     def create_stones(self):
         """
@@ -135,7 +141,7 @@ class Backgammon:
         print("- " + colored(self.player_two.name, self.player_two.color) + " -----------------------------")
         print(self.player_two.home)
         print(self.player_two.jail)
-        print("-------------------------")
+        print("----------------------------------------")
         for spike in self.spike_list:
             print(spike)
         print("- " + colored(self.player_one.name, self.player_one.color) + " -----------------------------")
