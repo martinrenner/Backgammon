@@ -19,7 +19,7 @@ class Backgammon:
         """
         Constructor - initialize game board + dice
         """
-        self.spike_list = [Spike(i+1) for i in range(NUM_SPIKES)]
+        self.spike_list = [Spike(i) for i in range(NUM_SPIKES)]
         self.dice = Dice()
 
     def run(self):
@@ -65,8 +65,9 @@ class Backgammon:
                 possible_moves = self.all_possible_moves(rolled, current_player)
                 if not possible_moves:
                     break
-                choice_index = current_player.turn(possible_moves, rolled)
+                choice_index = current_player.turn(possible_moves)
                 rolled.remove(possible_moves[choice_index][1])
+                current_player.move()
                 if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
                     break
             if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
@@ -164,10 +165,6 @@ class Backgammon:
         return rolls
     
     def all_possible_moves(self, rolled, current_player):
-        #prvni moznost: dostat se z jailu na hraci plochu (if hrac.jail neni prazdny)
-        #druha moznost: z plochy na plochu
-        #treti moznost: z posledniho sestive spiku domu (if set indexu kamenu <= 6 || >= 18)
-
         unique_spikes = set(current_player.spikes)
         unique_rolls = set(rolled)
         possible_moves = []
@@ -177,7 +174,11 @@ class Backgammon:
             for roll in unique_rolls:
                 destination_index = eval("0" + current_player.increase + str(roll))
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
-                    if not (self.spike_list[destination_index].peek().player != current_player and len(self.spike_list[destination_index]) >= 2): 
+                    try:
+                        player = self.spike_list[destination_index].peek().player
+                    except: 
+                        player = None
+                    if not (player != current_player and len(self.spike_list[destination_index]) >= 2): 
                         possible_moves.append((0, roll, destination_index))
             return possible_moves
             
@@ -196,8 +197,13 @@ class Backgammon:
                 destination_index = eval(str(index) + current_player.increase + str(roll))
                 #is in range
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
-                    if not (self.spike_list[destination_index].peek().player != current_player and len(self.spike_list[destination_index]) >= 2): 
+                    try:
+                        player = self.spike_list[destination_index].peek().player
+                    except: 
+                        player = None
+                    if not (player != current_player and len(self.spike_list[destination_index]) >= 2): 
                         possible_moves.append((index, roll, destination_index))
+        print(possible_moves)
         return possible_moves
 
     def end_statistics(self):
