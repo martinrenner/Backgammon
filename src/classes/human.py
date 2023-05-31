@@ -10,7 +10,7 @@ class Human(Player):
         possibilities = ""
         i = 0
         for start, step, end in possible_moves:
-            possibilities += f"[{i}] {start} -> {end}, "
+            possibilities += f"[{i}] {start} -> {end} ({step}),\t"
             i += 1
         print(possibilities)
         print("----------------------------------------")

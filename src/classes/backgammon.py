@@ -9,7 +9,8 @@ from os import system
 from termcolor import colored
 
 NUM_SPIKES = 24
-STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
+#STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
+STONES_LAYOUT = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]
 
 class Backgammon:
     """
@@ -35,11 +36,11 @@ class Backgammon:
         self.clear_console()
         if mode == 1:
             # Player vs Player
-            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, -1, 24, [17,18,19,20,21,22,"H"])
+            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, -1, 24, [18,19,20,21,22,23,"H"])
             self.player_two = Human("PLAYER 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
         elif mode == 2:
             # Player vs AI
-            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, 24, -1, [17,18,19,20,21,22,"H"])
+            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, 24, -1, [18,19,20,21,22,23,"H"])
             self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, -1, 24, [0,1,2,3,4,5,"H"])
         else:
             exit()
