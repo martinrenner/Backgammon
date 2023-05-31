@@ -30,6 +30,8 @@ class Node:
         Returns: 
         None
         """
+        stone.player.addSpike(self._index)
+        stone.addSpikeToHistory(self._index)
         self.stones.push(stone)
 
     def isEmpty(self):

@@ -20,7 +20,9 @@ class Jail(Node):
         Returns: 
         Any - removed item
         """
-        return self.stones.pop()
+        stone = self.stones.pop()
+        stone.player.removeSpike(self._index)
+        return stone
     
     def peek(self):
         """

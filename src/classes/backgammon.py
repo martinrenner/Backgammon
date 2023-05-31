@@ -113,8 +113,8 @@ class Backgammon:
         """
         for i in range(NUM_SPIKES):
             for _ in range(STONES_LAYOUT[i]):
-                self.spike_list[i].push(Stone(i, self.player_one))
-                self.spike_list[NUM_SPIKES - i - 1].push(Stone(NUM_SPIKES - i - 1, self.player_two))
+                self.spike_list[i].push(Stone(self.player_one))
+                self.spike_list[NUM_SPIKES - i - 1].push(Stone(self.player_two))
 
     def game_layout(self, rolled):
         """
@@ -170,7 +170,7 @@ class Backgammon:
         possible_moves = []
 
         # Check jail
-        if not current_player.jail.is_empty():
+        if not current_player.jail.isEmpty():
             for roll in unique_rolls:
                 destination_index = eval("0" + current_player.increase + str(roll))
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:

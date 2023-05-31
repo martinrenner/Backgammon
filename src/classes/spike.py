@@ -29,7 +29,9 @@ class Spike(Node):
         Returns:
         Any - removed item
         """
-        return self.stones.pop()
+        stone = self.stones.pop()
+        stone.player.popSpike(self._index)
+        return stone
 
     def __str__(self):
         try:
