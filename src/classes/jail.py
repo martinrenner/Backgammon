@@ -21,7 +21,7 @@ class Jail(Node):
         Any - removed item
         """
         stone = self.stones.pop()
-        stone.player.removeSpike(self._index)
+        stone.player.popSpike(self._index)
         return stone
     
     def peek(self):

@@ -35,12 +35,12 @@ class Backgammon:
         self.clear_console()
         if mode == 1:
             # Player vs Player
-            self.player_one = Human("+", "X", Colors.red)
-            self.player_two = Human("-", "Y", Colors.blue)
+            self.player_one = Human("+", "X", Colors.red, 0, 23)
+            self.player_two = Human("-", "Y", Colors.blue, 23, 0)
         elif mode == 2:
             # Player vs AI
-            self.player_one = Human("+", "X", Colors.red)
-            self.player_two = AI("-", "Y", Colors.blue)
+            self.player_one = Human("+", "X", Colors.red, 23, 0)
+            self.player_two = AI("-", "Y", Colors.blue, 0, 23)
         else:
             exit()
 
@@ -140,6 +140,7 @@ class Backgammon:
         print("----------------------------------------")
         print(f"ROLL: {rolled}")
         print("----------------------------------------")
+        self.debug()
 
     def debug(self):
         """
@@ -172,18 +173,18 @@ class Backgammon:
         # Check jail
         if not current_player.jail.isEmpty():
             for roll in unique_rolls:
-                destination_index = eval("0" + current_player.increase + str(roll))
+                destination_index = eval(str(current_player.min - 1) + current_player.increase + str(roll))
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
                     try:
                         player = self.spike_list[destination_index].peek().player
-                    except IndexError: 
+                    except: 
                         player = None
                     if not (player != current_player and len(self.spike_list[destination_index]) >= 2): 
-                        possible_moves.append((0, roll, destination_index))
+                        possible_moves.append(("J", roll, destination_index))
             return possible_moves
 
         # Check home
-        if all((i <= 5 or i >= 17) for i in unique_spikes):
+        if all((i <= eval(str(current_player.max) + current_player.increase + str(-6)) or i == 'H') for i in unique_spikes):
             for index in unique_spikes:
                 for roll in unique_rolls:
                     destination_index = eval(str(index) + current_player.increase + str(roll))
@@ -199,7 +200,7 @@ class Backgammon:
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
                     try:
                         player = self.spike_list[destination_index].peek().player
-                    except IndexError: 
+                    except: 
                         player = None
                     if not (player != current_player and len(self.spike_list[destination_index]) >= 2): 
                         possible_moves.append((index, roll, destination_index))
@@ -215,7 +216,11 @@ class Backgammon:
         except Exception as err:
             print(f"Unexpected {err=}, {type(err)=}")
 
-        stone = self.spike_list[from_spike].pop()
+        if(from_spike == "J"):
+            stone = current_player.jail.pop()
+        else:
+            stone = self.spike_list[from_spike].pop()
+
         if(to_spike == "H"):
             current_player.home.push(stone)
         else:

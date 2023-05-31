@@ -1,8 +1,8 @@
 from src.classes.player import Player
 
 class Human(Player):
-    def __init__(self, increase, symbol, color):
-        super().__init__(increase, symbol, color)
+    def __init__(self, increase, symbol, color, min, max):
+        super().__init__(increase, symbol, color, min, max)
 
     #possible_moves je list, kazdy prvek je list [z jakeho spiku, posun o kolik]
     def turn(self, possible_moves):

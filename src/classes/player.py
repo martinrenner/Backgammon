@@ -3,7 +3,7 @@ from src.classes.jail import Jail
 from src.classes.home import Home
 
 class Player(ABC):
-    def __init__(self, increase, symbol, color):
+    def __init__(self, increase, symbol, color, min, max):
         self._spikes = []
         self._opposite_player = None
         self._home = Home()
@@ -11,6 +11,8 @@ class Player(ABC):
         self._increase = increase
         self._symbol = symbol
         self._color = color
+        self._min = min
+        self._max = max
 
     @property
     def spikes(self):
@@ -39,6 +41,14 @@ class Player(ABC):
     @property
     def increase(self):
         return self._increase
+
+    @property
+    def min(self):
+        return self._min
+    
+    @property
+    def max(self):
+        return self._max
 
     @opposite_player.setter
     def opposite_player(self, player):
