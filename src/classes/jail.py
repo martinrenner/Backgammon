@@ -22,6 +22,15 @@ class Jail(Node):
         """
         return self.stones.pop()
     
+    def peek(self):
+        """
+        Peek - returns the item at the top of jail
+
+        Returns:
+        Any - last added item
+        """
+        return self.stones.peek()
+    
     def __str__(self):
         try:
             player = self.stones.peek().player

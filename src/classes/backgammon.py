@@ -172,12 +172,28 @@ class Backgammon:
         unique_rolls = set(rolled)
         possible_moves = []
 
+        #check jail
+        if not current_player.jail.isEmpty():
+            for roll in unique_rolls:
+                destination_index = eval("0" + current_player.increase + str(roll))
+                if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
+                    if not (self.spike_list[destination_index].peek().player != current_player and len(self.spike_list[destination_index]) >= 2): 
+                        possible_moves.append((0, roll, destination_index))
+            return possible_moves
+            
+        #check home
+        if all((i<= 5 or i >= 17) for i in unique_spikes):
+            pass
+        
+        #normal move
+
         for index in unique_spikes:
             for roll in unique_rolls:
                 destination_index = eval(str(index) + current_player.increase + str(roll))
+                #is in range
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
-                    possible_moves.append((index, roll, destination_index))
-        print(possible_moves)
+                    if not (self.spike_list[destination_index].peek().player != current_player and len(self.spike_list[destination_index]) >= 2): 
+                        possible_moves.append((index, roll, destination_index))
         return possible_moves
 
     def end_statistics(self):

@@ -13,6 +13,15 @@ class Spike(Node):
         """
         super().__init__(index)
 
+    def peek(self):
+        """
+        Peek - returns the item at the top of spike
+
+        Returns:
+        Any - last added item
+        """
+        return self.stones.peek()
+
     def __str__(self):
         try:
             player = self.stones.peek().player
