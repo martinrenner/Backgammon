@@ -183,10 +183,14 @@ class Backgammon:
             
         #check home
         if all((i<= 5 or i >= 17) for i in unique_spikes):
-            pass
+            for index in unique_spikes:
+                for roll in unique_rolls:
+                    destination_index = eval(str(index) + current_player.increase + str(roll))
+                    #is in range
+                    if destination_index < 0 and destination_index > NUM_SPIKES - 1:
+                        possible_moves.append((index, roll, "H"))
         
         #normal move
-
         for index in unique_spikes:
             for roll in unique_rolls:
                 destination_index = eval(str(index) + current_player.increase + str(roll))
