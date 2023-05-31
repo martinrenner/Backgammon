@@ -29,6 +29,6 @@ class Home(Node):
     def __str__(self):
         try:
             player = self.stones.peek().player
-            return f"Home - {colored((player.symbol) * len(self.stones), player.color)}"
+            return f"Home - {colored((player.symbol) * len(self.stones), player.color)} - ({len(self.stones)})"
         except:
             return f"Home - "

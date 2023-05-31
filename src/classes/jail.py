@@ -36,6 +36,6 @@ class Jail(Node):
     def __str__(self):
         try:
             player = self.stones.peek().player
-            return f"Jail - {colored((player.symbol) * len(self.stones), player.color)}"
+            return f"Jail - {colored((player.symbol) * len(self.stones), player.color)} - ({len(self.stones)})"
         except:
             return f"Jail - "
