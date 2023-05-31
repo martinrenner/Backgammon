@@ -6,14 +6,22 @@ class AI(Player):
         super().__init__(name, increase, symbol, color, min, max, toHomeArea)
     
     def turn(self, possible_moves):
-        #FROM ALL POSSIBLE MOVES RANDOM PICK
+        """
+        Turn - choose a random move from the given list of possible moves
+        
+        Parameters:
+        possible_moves: A list of possible moves
+
+        Returns: 
+        tuple representing the move selected by AI. The tuple contains three elements: start, step, and end.
+        """
         chosen = choice(possible_moves)
         return chosen
 
-    def moveStone(self):
-        ...
+    # def moveStone(self):
+    #     ...
 
-    def moveToHome(self, stone):
-        ...
+    # def moveToHome(self, stone):
+    #     ...
 
         

@@ -9,8 +9,7 @@ from os import system
 from termcolor import colored
 
 NUM_SPIKES = 24
-#STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
-STONES_LAYOUT = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]
+STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
 
 class Backgammon:
     """
@@ -166,6 +165,16 @@ class Backgammon:
         return rolls
     
     def all_possible_moves(self, rolled, current_player):
+        """
+        All_possible_moves - calculates a list of all possible moves of stones for the current player
+        
+        Parameters:
+        rolled: A list of integers representing the values rolled on the dice
+        current_player: The player whose possible moves are being calculated.
+
+        Returns:
+        possible_moves(list(from, step, to)) - a list of possible moves a player can make based on the dice roll and their current position
+        """
         unique_spikes = set(current_player.spikes)
         unique_rolls = set(rolled)
         possible_moves = []
@@ -212,6 +221,17 @@ class Backgammon:
 
 
     def move(self, current_player, from_spike, to_spike):
+        """
+        Move - moves a stone from one spike to another based on the current location
+
+        Parameters:
+        current_player (Player): The player whose stone is being moved.
+        from_spike (int): The spike from which the stone is being moved.
+        to_spike (int): The spike to which the stone is being moved.
+
+        Returns:
+        None
+        """
         try:
             peek = self.spike_list[to_spike].peek()
             if(peek.player != current_player):

@@ -74,11 +74,11 @@ class Player(ABC):
     def popSpike(self, spike):
         self._spikes.remove(spike)
 
-    @abstractmethod
-    def moveToHome(self, stone):
-        ...
+    # @abstractmethod
+    # def moveToHome(self, stone):
+    #     ...
 
-    @abstractmethod
-    def moveStone(self):
-        ...
+    # @abstractmethod
+    # def moveStone(self):
+    #     ...
     
