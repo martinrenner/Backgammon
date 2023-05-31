@@ -62,7 +62,7 @@ class Backgammon:
             rolled = self.roll_double_dice()
             while rolled:
                 self.game_layout(rolled)
-                possible_moves = self.all_possible_moves(rolled)
+                possible_moves = self.all_possible_moves(rolled, current_player)
                 if not possible_moves:
                     break
                 choice_index = current_player.turn(possible_moves, rolled)
@@ -163,13 +163,22 @@ class Backgammon:
             rolls *= 2
         return rolls
     
-    def all_possible_moves(self, rolled):
+    def all_possible_moves(self, rolled, current_player):
         #prvni moznost: dostat se z jailu na hraci plochu (if hrac.jail neni prazdny)
         #druha moznost: z plochy na plochu
         #treti moznost: z posledniho sestive spiku domu (if set indexu kamenu <= 6 || >= 18)
 
+        unique_spikes = set(current_player.spikes)
+        unique_rolls = set(rolled)
+        possible_moves = []
 
-        return []
+        for index in unique_spikes:
+            for roll in unique_rolls:
+                destination_index = eval(str(index) + current_player.increase + str(roll))
+                if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
+                    possible_moves.append((index, roll, destination_index))
+        print(possible_moves)
+        return possible_moves
 
     def end_statistics(self):
         """

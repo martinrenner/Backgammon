@@ -13,6 +13,10 @@ class Player(ABC):
         self._color = color
 
     @property
+    def spikes(self):
+        return self._spikes
+
+    @property
     def home(self):
         return self._home
     
@@ -31,6 +35,10 @@ class Player(ABC):
     @property
     def symbol(self):
         return self._symbol
+    
+    @property
+    def increase(self):
+        return self._increase
 
     @opposite_player.setter
     def opposite_player(self, player):
