@@ -94,10 +94,16 @@ class Backgammon:
         print("1 - Player vs Player")
         print("2 - Player vs AI")
         print("3 - Exit")
-        choice = input("Choose menu option (1-3): ")
-        while choice not in ('1', '2', '3'):
-            choice = input("Invalid choice. Choose menu option (1-3): ")
-        return int(choice)
+        while True:
+            try:
+                choice = int(input("Choose menu option (1-3): "))
+                if choice > 0 and choice < 4:
+                    break
+                else:
+                    print(f"Invalid choice. Choose option (0-3).")
+            except ValueError:
+                print(f"Invalid choice. Choose option (0-3).")
+        return choice
 
     def clear_console(self):
         """

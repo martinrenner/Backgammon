@@ -21,10 +21,16 @@ class Human(Player):
             i += 1
         print(possibilities)
         print("----------------------------------------")
-        choice = input("CHOOSE POSSIBLE MOVE: ")
-        while not ((int)(choice) >= 0 and (int)(choice) < i):
-            choice = input(f"Invalid choice. Choose option (0-{i-1}): ")
-        return possible_moves[(int)(choice)]
+        while True:
+            try:
+                choice = int(input("CHOOSE POSSIBLE MOVE: "))
+                if choice >= 0 and choice < i:
+                    break
+                else:
+                    print(f"Invalid choice. Choose option (0-{i-1}).")
+            except ValueError:
+                print(f"Invalid choice. Choose option (0-{i-1}).")
+        return possible_moves[choice]
     
     # def moveStone(self):
     #     ...
