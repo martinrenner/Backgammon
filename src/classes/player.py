@@ -5,8 +5,7 @@ from src.classes.home import Home
 class Player(ABC):
     def __init__(self, increase, symbol, color):
         self._spikes = []
-        self._possibleMoves = []
-        self._oppositePlayer = None
+        self._opposite_player = None
         self._home = Home()
         self._jail = Jail()
         self._increase = increase
@@ -22,8 +21,8 @@ class Player(ABC):
         return self._jail
     
     @property
-    def oppositePlayer(self):
-        return self._oppositePlayer
+    def opposite_player(self):
+        return self._opposite_player
 
     @property
     def color(self):
@@ -33,9 +32,9 @@ class Player(ABC):
     def symbol(self):
         return self._symbol
 
-    @oppositePlayer.setter
-    def oppositePlayer(self, player):
-        self._oppositePlayer = player
+    @opposite_player.setter
+    def opposite_player(self, player):
+        self._opposite_player = player
 
     @color.setter
     def color(self, color):

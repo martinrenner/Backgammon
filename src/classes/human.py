@@ -13,7 +13,7 @@ class Human(Player):
         chosen = input("CHOOSE POSSIBLE MOVE: ")
         while not (choice >= 1 and choice <= len(possible_moves)):
             choice = input("Invalid choice. ")
-        return rolled.remove(possible_moves[chosen - 1][1])
+        return chosen - 1
     
     def moveStone(self):
         ...

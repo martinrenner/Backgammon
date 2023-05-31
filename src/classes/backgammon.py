@@ -65,7 +65,8 @@ class Backgammon:
                 possible_moves = self.all_possible_moves(rolled)
                 if not possible_moves:
                     break
-                rolled = current_player.turn(possible_moves, rolled)
+                choice_index = current_player.turn(possible_moves, rolled)
+                rolled.remove(possible_moves[choice_index][1])
                 if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
                     break
             if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():

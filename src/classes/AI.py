@@ -8,7 +8,7 @@ class AI(Player):
     def turn(self, possible_moves, rolled):
         #FROM ALL POSSIBLE MOVES RANDOM PICK
         chosen = choice(possible_moves)
-        return rolled.remove(possible_moves[chosen][1])
+        return chosen
 
     def moveStone(self):
         ...
