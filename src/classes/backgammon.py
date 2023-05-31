@@ -9,8 +9,7 @@ from os import system
 from termcolor import colored
 
 NUM_SPIKES = 24
-#STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
-STONES_LAYOUT = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,5,0,0,0]
+STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
 
 class Backgammon:
     """
@@ -36,12 +35,12 @@ class Backgammon:
         self.clear_console()
         if mode == 1:
             # Player vs Player
-            self.player_one = Human("Player 1", "+", "X", Colors.red, -1, 24, [17,18,19,20,21,22,"H"])
-            self.player_two = Human("Player 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
+            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, -1, 24, [17,18,19,20,21,22,"H"])
+            self.player_two = Human("PLAYER 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
         elif mode == 2:
             # Player vs AI
-            self.player_one = Human("Player 1", "+", "X", Colors.red, 24, -1, [17,18,19,20,21,22,"H"])
-            self.player_two = AI("Player 3", "-", "Y", Colors.blue, -1, 24, [0,1,2,3,4,5,"H"])
+            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, 24, -1, [17,18,19,20,21,22,"H"])
+            self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, -1, 24, [0,1,2,3,4,5,"H"])
         else:
             exit()
 
@@ -62,7 +61,7 @@ class Backgammon:
         while True:
             rolled = self.roll_double_dice()
             while rolled:
-                self.game_layout(rolled)
+                self.game_layout(rolled, current_player)
                 possible_moves = self.all_possible_moves(rolled, current_player)
                 if not possible_moves:
                     break
@@ -117,7 +116,7 @@ class Backgammon:
                 self.spike_list[i].push(Stone(self.player_one))
                 self.spike_list[NUM_SPIKES - i - 1].push(Stone(self.player_two))
 
-    def game_layout(self, rolled):
+    def game_layout(self, rolled, current_player):
         """
         Game_layout - prints the current state of the backgammon board and the rolled dice.
         
@@ -129,19 +128,18 @@ class Backgammon:
         """
         self.clear_console()
         print("BACKGAMMON GAME")
-        print("- " + colored("PLAYER 2", self.player_two.color) + " -----------------------------")
+        print("- " + colored(self.player_two.name, self.player_two.color) + " -----------------------------")
         print(self.player_two.home)
         print(self.player_two.jail)
         print("-------------------------")
         for spike in self.spike_list:
             print(spike)
-        print("- " + colored("PLAYER 1", self.player_one.color) + " -----------------------------")
+        print("- " + colored(self.player_one.name, self.player_one.color) + " -----------------------------")
         print(self.player_one.jail)
         print(self.player_one.home)
-        print("----------------------------------------")
+        print("- TURN ---------------------------------")
+        print(f"{colored(current_player.name, current_player.color)}")
         print(f"ROLL: {rolled}")
-        print("----------------------------------------")
-        self.debug()
 
     def debug(self):
         """

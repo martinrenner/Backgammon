@@ -13,7 +13,7 @@ class Human(Player):
             possibilities += f"[{i}] {start} -> {end}, "
             i += 1
         print(possibilities)
-        print(self.name)
+        print("----------------------------------------")
         choice = input("CHOOSE POSSIBLE MOVE: ")
         while not ((int)(choice) >= 0 and (int)(choice) < i):
             choice = input(f"Invalid choice. Choose option (0-{i-1}): ")
