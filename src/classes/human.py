@@ -13,10 +13,10 @@ class Human(Player):
             possibilities += f"[{i}] {start} -> {end}, "
             i += 1
         print(possibilities)
-        chosen = input("CHOOSE POSSIBLE MOVE: ")
-        while not (choice >= 1 and choice <= len(possible_moves)):
-            choice = input("Invalid choice. ")
-        return chosen
+        choice = (int)(input("CHOOSE POSSIBLE MOVE: "))
+        while not (choice >= 0 and choice <= i):
+            choice = input(f"Invalid choice. Choose option (0-{i}): ")
+        return possible_moves[choice]
     
     def moveStone(self):
         ...

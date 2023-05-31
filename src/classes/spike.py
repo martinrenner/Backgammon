@@ -21,6 +21,15 @@ class Spike(Node):
         Any - last added item
         """
         return self.stones.peek()
+    
+    def pop(self):
+        """
+        Pop - removes and returns item at the top of spike
+
+        Returns:
+        Any - removed item
+        """
+        return self.stones.pop()
 
     def __str__(self):
         try:

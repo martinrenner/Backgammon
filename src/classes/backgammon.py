@@ -65,9 +65,10 @@ class Backgammon:
                 possible_moves = self.all_possible_moves(rolled, current_player)
                 if not possible_moves:
                     break
-                choice_index = current_player.turn(possible_moves)
-                rolled.remove(possible_moves[choice_index][1])
-                current_player.move()
+                from_spike, roll_choice, to_spike = current_player.turn(possible_moves)
+                print(roll_choice)
+                rolled.remove(roll_choice)
+                self.move(current_player, from_spike, to_spike)
                 if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
                     break
             if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
@@ -205,6 +206,13 @@ class Backgammon:
                         possible_moves.append((index, roll, destination_index))
         print(possible_moves)
         return possible_moves
+
+    def move(self, current_player, from_spike, to_spike):
+        stone = self.spike_list[from_spike].pop()
+        if(to_spike == "H"):
+            self.active_player.home.push(stone)
+        else:
+            self.spike_list[to_spike].push(stone)
 
     def end_statistics(self):
         """
