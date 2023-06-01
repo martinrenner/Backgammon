@@ -86,6 +86,10 @@ class Player(ABC):
     def resetLastRoundMove(self):
         self._last_round_moves = ""
 
+    @abstractmethod
+    def turn(self, possible_moves):
+        ...
+
     # @abstractmethod
     # def moveToHome(self, stone):
     #     ...
