@@ -97,7 +97,7 @@ class Backgammon:
         while True:
             try:
                 choice = int(input("Choose menu option (1-3): "))
-                if choice > 0 and choice < 4:
+                if choice in range(1, 4):
                     break
                 else:
                     print(f"Invalid choice. Choose option (0-3).")
@@ -112,13 +112,7 @@ class Backgammon:
         Returns:
         None
         """
-        # for windows
-        if name == 'nt':
-            _ = system('cls')
-    
-        # for mac and linux(here, os.name is 'posix')
-        else:
-            _ = system('clear')
+        system('cls' if name == 'nt' else 'clear')
 
     def create_stones(self):
         """
