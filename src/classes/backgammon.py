@@ -33,14 +33,19 @@ class Backgammon:
         """
         mode = self.menu()
         self.clear_console()
-        if mode == 1:
+        if mode == 0:
             # Player vs Player
             self.player_one = Human("PLAYER 1", "+", "X", Colors.red, -1, 24, [18,19,20,21,22,23,"H"])
             self.player_two = Human("PLAYER 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
-        elif mode == 2:
+        elif mode == 1:
             # Player vs AI
             self.player_one = Human("PLAYER 1", "+", "X", Colors.red, -1, 24, [18,19,20,21,22,23,"H"])
             self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
+        elif mode == 2:
+            # LOAD GAME
+            # needs prompt for PATH
+            print("TO DO...")
+            exit()
         else:
             exit()
 
@@ -81,20 +86,21 @@ class Backgammon:
         Menu - displays a menu for the Backgammon game and prompts the user to select an option
         
         Returns: 
-        Int - representing the user's choice (Either 1, 2, or 3)
+        Int - representing the user's choice (Either 0, 1, 2, or 3)
         """
         self.clear_console()
         print("BACKGAMMON GAME")
         print("-" * 40)
         print("Created by: Martin Renner")
         print("-" * 40)
-        print("1 - Player vs Player")
-        print("2 - Player vs AI")
+        print("0 - Player vs Player")
+        print("1 - Player vs AI")
+        print("2 - Load Game")
         print("3 - Exit")
         while True:
             try:
-                choice = int(input("Choose menu option (1-3): "))
-                if choice in range(1, 4):
+                choice = int(input("Choose menu option (0-3): "))
+                if choice in range(0, 4):
                     break
                 else:
                     print(f"Invalid choice. Choose option (0-3).")
