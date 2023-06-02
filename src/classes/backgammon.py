@@ -57,8 +57,10 @@ class Backgammon:
         Returns: 
         None
         """
-        current_player = self.player_one
-        while True:
+        current_player = self.player_two
+        while not current_player.home.allStonesHome():
+            current_player = current_player.oppositePlayer
+            current_player.resetLastRoundMove()
             rolled = self.roll_double_dice()
             while rolled:
                 self.game_layout(rolled, current_player)
@@ -67,16 +69,11 @@ class Backgammon:
                     current_player.last_round_moves += "[No possible move]"
                     break
                 from_spike, roll_choice, to_spike = current_player.turn(possible_moves)
-                print(current_player.last_round_moves)
                 current_player.last_round_moves += f"[{from_spike} -> {to_spike} ({roll_choice})], "
                 rolled.remove(roll_choice)
                 self.move(current_player, from_spike, to_spike)
-                if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
+                if current_player.home.allStonesHome():
                     break
-            if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
-                break
-            current_player = current_player.oppositePlayer
-            current_player.resetLastRoundMove()
         self.end_statistics()
 
     def menu(self):
@@ -149,10 +146,7 @@ class Backgammon:
         print(self.player_one.home)
         print("- TURN ---------------------------------")
         print(f"{colored(current_player.name, current_player.color)}")
-        if self.player_one != current_player:
-            print(f"Opponents history: {self.player_one.last_round_moves:}")
-        else:
-            print(f"Opponents history: {self.player_two.last_round_moves:}")
+        print(f"Opponents history: {current_player.oppositePlayer.last_round_moves}")
         print(f"ROLL: {rolled}")
 
     def debug(self):
