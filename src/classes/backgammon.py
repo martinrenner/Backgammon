@@ -68,7 +68,7 @@ class Backgammon:
                     break
                 from_spike, roll_choice, to_spike = current_player.turn(possible_moves)
                 print(current_player.last_round_moves)
-                current_player.last_round_moves += f"[{from_spike}, {roll_choice}, {to_spike}], "
+                current_player.last_round_moves += f"[{from_spike} -> {to_spike} ({roll_choice})], "
                 rolled.remove(roll_choice)
                 self.move(current_player, from_spike, to_spike)
                 if self.player_one.home.allStonesHome() or self.player_two.home.allStonesHome():
