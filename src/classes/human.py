@@ -1,8 +1,8 @@
 from src.classes.player import Player
 
 class Human(Player):
-    def __init__(self, name, increase, symbol, color, min, max, toHomeArea):
-        super().__init__(name, increase, symbol, color, min, max, toHomeArea)
+    def __init__(self, name, increase, symbol, color, toHomeArea):
+        super().__init__(name, increase, symbol, color, toHomeArea)
 
     def turn(self, possible_moves):
         """
@@ -27,11 +27,11 @@ class Human(Player):
                 if choice >= 0 and choice < i:
                     break
                 else:
-                    print(f"Invalid choice. Choose option (0-{i-1}).")
+                    print(f"Invalid choice. Choose option (0-{i-1}) or (save).")
             except ValueError:
                 print(f"Invalid choice. Choose option (0-{i-1}).")
         return possible_moves[choice]
-    
+
     # def moveStone(self):
     #     ...
 

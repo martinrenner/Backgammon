@@ -56,3 +56,6 @@ class Stack:
         Int - number of items in the stack
         """
         return len(self.__data)
+
+    def dump(self):
+        return self.__data
