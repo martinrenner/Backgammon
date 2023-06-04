@@ -2,6 +2,7 @@ from src.classes.node import Node
 from termcolor import colored
 from src.classes.colors import Colors
 
+
 class Spike(Node):
     """
     Spike class
@@ -21,7 +22,7 @@ class Spike(Node):
         Any - last added item
         """
         return self.stones.peek()
-    
+
     def pop(self):
         """
         Pop - removes and returns item at the top of spike
@@ -39,4 +40,3 @@ class Spike(Node):
             return f"{self.index:02d} - {colored((player.symbol) * len(self.stones), player.color)}"
         except:
             return f"{self.index:02d} - "
-        

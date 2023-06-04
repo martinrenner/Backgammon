@@ -1,17 +1,20 @@
-class Stone():
+class Stone:
+    """
+    Stone class
+    """
+
     def __init__(self, player):
         self._player = player
         self._history = []
-    
-    
+
     def setHistory(self, history):
         self._history = history
 
-    @property    
+    @property
     def player(self):
         return self._player
 
-    @property    
+    @property
     def history(self):
         return self._history
 

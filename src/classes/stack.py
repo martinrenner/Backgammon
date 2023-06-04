@@ -16,7 +16,7 @@ class Stack:
         Parameters:
         item (Any): item to be added
 
-        Returns: 
+        Returns:
         None
         """
         self.__data.append(item)
@@ -46,13 +46,13 @@ class Stack:
         Returns:
         Boolean - true if empty
         """
-        return not self.__data 
-    
+        return not self.__data
+
     def __len__(self):
         """
         len - return number of items
 
-        Returns: 
+        Returns:
         Int - number of items in the stack
         """
         return len(self.__data)

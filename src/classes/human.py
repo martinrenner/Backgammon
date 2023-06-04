@@ -1,17 +1,22 @@
 from src.classes.player import Player
 
+
 class Human(Player):
+    """
+    Human player class
+    """
+
     def __init__(self, name, increase, symbol, color, to_home_area):
         super().__init__(name, increase, symbol, color, to_home_area)
 
     def turn(self, possible_moves):
         """
         Turn - prints all the possible moves along with an index that user can choose from
-        
-        Parameters: 
+
+        Parameters:
         possible_moves: A list of tuples representing possible moves. Each tuple contains three elements: start, step, and end.
-        
-        Returns: 
+
+        Returns:
         tuple representing the move selected by the user. The tuple contains three elements: start, step, and end.
         """
         possibilities = ""
