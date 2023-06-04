@@ -7,12 +7,13 @@ from src.classes.dice import Dice
 from sys import exit
 from os import system, name
 from termcolor import colored
+import os, json
 
 NUM_SPIKES = 24
 STONES_LAYOUT = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0]
 
 class Backgammon:
-    """
+    """obj
     Backgammon game class
     """
     def __init__(self):
@@ -21,6 +22,13 @@ class Backgammon:
         """
         self.spike_list = [Spike(i) for i in range(NUM_SPIKES)]
         self.dice = Dice()
+
+        self._saveFolder = "./saves"
+        self._maxSaves = 4
+        self._lastSave = 0
+        
+        self.current_player = None
+        self.rolled = []
 
     def run(self):
         """
@@ -31,29 +39,76 @@ class Backgammon:
         If any other value is entered, the function will exit. 
         The function then creates stones and starts the game.
         """
-        mode = self.menu()
+        self.mode = self.menu()
         self.clear_console()
-        if mode == 0:
+
+        self.player_one = Human("PLAYER 1", "+", "X", Colors.red, [18,19,20,21,22,23,"H"])
+
+        if self.mode == 0:
             # Player vs Player
-            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, -1, 24, [18,19,20,21,22,23,"H"])
-            self.player_two = Human("PLAYER 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
-        elif mode == 1:
+            self.setPlayerTwo("human")
+        elif self.mode == 1:
             # Player vs AI
-            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, -1, 24, [18,19,20,21,22,23,"H"])
-            self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, 24, -1, [0,1,2,3,4,5,"H"])
-        elif mode == 2:
+            self.setPlayerTwo("AI")
+            
+            
+        elif self.mode == 2:
             # LOAD GAME
-            # needs prompt for PATH
-            print("TO DO...")
-            exit()
+            print("Listing all save files: " )
+            print("-----------------------")
+            files = os.listdir(self._saveFolder)
+            for index in range(0, len(files)):
+                file = files[index].split(".")[0]
+                print(f"{index}) - {file}") 
+            self.memory = 0
+            while self.memory == 0:
+                try:
+                    choice = int(input("Select savefile: "))
+                    with open(f"{self._saveFolder}/{files[choice]}", "r") as reader:
+                        loader = json.load(reader)
+                        self.memory = loader
+                except:
+                    print(f"Invalid choice. Please select number between 0 - {len(files)-1}")
+            
+            if self.memory['gamemode'] == 0:
+                self.setPlayerTwo('human')
+            else:
+                self.setPlayerTwo('AI')
+
+            players = {'X': self.player_one, 'Y': self.player_two}
+            self.current_player = players[self.memory['current']]
+
+            self.rolled = self.memory['rollsLeft']
+
+            # generate stones for player One
+            self.load_stones(self.player_one, self.memory['player_one']['stones'])
+            self.load_stones(self.player_two, self.memory['player_two']['stones'])
+
+            # debug
+            # print(self.memory)
+            # input()
         else:
             exit()
 
-        self.player_one.oppositePlayer = self.player_two
-        self.player_two.oppositePlayer = self.player_one
+        if self.mode < 2:
+            self.create_stones()
+        else:
+            self.mode = self.memory['gamemode']
 
-        self.create_stones()
+        if self.current_player == None:
+            self.current_player = self.player_two
+
+        self.player_one.opposite_player = self.player_two
+        self.player_two.opposite_player = self.player_one
+        
         self.start_game()
+
+    def setPlayerTwo(self, type):
+        playerTwo = None
+        if type == "AI":
+            self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, [0,1,2,3,4,5,"H"])
+        else:
+            self.player_two = Human("PLAYER 2", "-", "Y", Colors.blue, [0,1,2,3,4,5,"H"])
 
     def start_game(self):
         """
@@ -62,22 +117,25 @@ class Backgammon:
         Returns: 
         None
         """
-        current_player = self.player_two
-        while not current_player.home.allStonesHome():
-            current_player = current_player.oppositePlayer
-            current_player.resetLastRoundMove()
-            rolled = self.roll_double_dice()
-            while rolled:
-                self.game_layout(rolled, current_player)
-                possible_moves = self.all_possible_moves(rolled, current_player)
+        
+        while not self.current_player.home.allStonesHome():
+            if not self.rolled:
+                self.current_player = self.current_player.opposite_player
+                self.current_player.resetLastRoundMove()
+                self.rolled = self.roll_double_dice()
+            while self.rolled:
+                self.game_layout()
+                possible_moves = self.all_possible_moves()
                 if not possible_moves:
-                    current_player.last_round_moves += "[No possible move]"
+                    self.current_player.last_round_moves += "[No possible move]"
+                    self.rolled = []
                     break
-                from_spike, roll_choice, to_spike = current_player.turn(possible_moves)
-                current_player.last_round_moves += f"[{from_spike} -> {to_spike} ({roll_choice})], "
-                rolled.remove(roll_choice)
-                self.move(current_player, from_spike, to_spike)
-                if current_player.home.allStonesHome():
+                from_spike, roll_choice, to_spike = self.current_player.turn(possible_moves)
+                self.current_player.last_round_moves += f"[{from_spike} -> {to_spike} ({roll_choice})], "
+                self.rolled.remove(roll_choice)
+                self.move( from_spike, to_spike)
+                self.auto_save()
+                if self.current_player.home.allStonesHome():
                     break
         self.end_statistics()
 
@@ -117,6 +175,36 @@ class Backgammon:
         """
         system('cls' if name == 'nt' else 'clear')
 
+    def load_stones(self, player, memory):
+        """
+        Load stones from memory onto the board.
+    
+        Args:
+            player (Player): The player who owns the stones.
+            memory (list): A list of lists representing the memory of the board.
+    
+        Returns:
+            None
+        """
+    
+        for spike in memory:
+            # Iterate over each spike in memory
+            for stone in spike:
+                # Iterate over each stone in the spike
+                newStone = Stone(player)
+                last = stone.pop(-1)
+                newStone.setHistory(stone)
+                if last == "J":
+                    # If the last position is J, push the stone to the jail stack
+                    player.jail.push(newStone)
+                elif last == "H":
+                    # If the last position is H, push the stone to the home stack
+                    player.home.push(newStone)
+                else:
+                    # Otherwise, push the stone to the spike corresponding to the last position
+                    spike_list[last].push(newStone)
+
+
     def create_stones(self):
         """
         Create_stones - creates stones for the game board by pushing them onto the spikes of the board
@@ -129,7 +217,7 @@ class Backgammon:
                 self.spike_list[i].push(Stone(self.player_one))
                 self.spike_list[NUM_SPIKES - i - 1].push(Stone(self.player_two))
 
-    def game_layout(self, rolled, current_player):
+    def game_layout(self):
         """
         Game_layout - prints the current state of the backgammon board and the rolled dice.
         
@@ -151,9 +239,9 @@ class Backgammon:
         print(self.player_one.jail)
         print(self.player_one.home)
         print("- TURN ---------------------------------")
-        print(f"{colored(current_player.name, current_player.color)}")
-        print(f"Opponents history: {current_player.oppositePlayer.last_round_moves}")
-        print(f"ROLL: {rolled}")
+        print(f"{colored(self.current_player.name, self.current_player.color)}")
+        print(f"Opponents history: {self.current_player.opposite_player.last_round_moves}")
+        print(f"ROLL: {self.rolled}")
 
     def debug(self):
         """
@@ -178,7 +266,7 @@ class Backgammon:
             rolls *= 2
         return rolls
     
-    def all_possible_moves(self, rolled, current_player):
+    def all_possible_moves(self):
         """
         All_possible_moves - calculates a list of all possible moves of stones for the current player
         
@@ -189,30 +277,30 @@ class Backgammon:
         Returns:
         possible_moves(list(from, step, to)) - a list of possible moves a player can make based on the dice roll and their current position
         """
-        unique_spikes = set(current_player.spikes)
-        unique_rolls = set(rolled)
+        unique_spikes = set(self.current_player.spikes)
+        unique_rolls = set(self.rolled)
         possible_moves = []
 
         # Check jail
-        if not current_player.jail.isEmpty():
+        if not self.current_player.jail.isEmpty():
             for roll in unique_rolls:
-                destination_index = eval(str(current_player.min) + current_player.increase + str(roll))
+                destination_index = eval(str(self.current_player.min) + self.current_player.increase + str(roll))
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
                     try:
                         player = self.spike_list[destination_index].peek().player
                     except: 
                         player = None
-                    if not (player != current_player and len(self.spike_list[destination_index]) >= 2): 
+                    if not (player != self.current_player and len(self.spike_list[destination_index]) >= 2): 
                         possible_moves.append(("J", roll, destination_index))
             return possible_moves
 
         # Check home
-        if all((i in current_player.toHomeArea) for i in unique_spikes):
+        if all((i in self.current_player.toHomeArea) for i in unique_spikes):
             for index in unique_spikes:
                 if(index == "H"):
                     continue
                 for roll in unique_rolls:
-                    destination_index = eval(str(index) + current_player.increase + str(roll))
+                    destination_index = eval(str(index) + self.current_player.increase + str(roll))
                     # is in range
                     if destination_index < 0 or destination_index > NUM_SPIKES - 1:
                         possible_moves.append((index, roll, "H"))
@@ -222,19 +310,19 @@ class Backgammon:
             if(index == "H"):
                 continue
             for roll in unique_rolls:
-                destination_index = eval(str(index) + current_player.increase + str(roll))
+                destination_index = eval(str(index) + self.current_player.increase + str(roll))
                 # is in range
                 if destination_index >= 0 and destination_index <= NUM_SPIKES - 1:
                     try:
                         player = self.spike_list[destination_index].peek().player
                     except: 
                         player = None
-                    if not (player != current_player and len(self.spike_list[destination_index]) >= 2): 
+                    if not (player != self.current_player and len(self.spike_list[destination_index]) >= 2): 
                         possible_moves.append((index, roll, destination_index))
         return possible_moves
 
 
-    def move(self, current_player, from_spike, to_spike):
+    def move(self, from_spike, to_spike):
         """
         Move - moves a stone from one spike to another based on the current location
 
@@ -248,19 +336,19 @@ class Backgammon:
         """
         try:
             peek = self.spike_list[to_spike].peek()
-            if(peek.player != current_player):
+            if(peek.player != self.current_player):
                 stone = self.spike_list[to_spike].pop()
-                current_player.oppositePlayer.jail.push(stone)
+                self.current_player.opposite_player.jail.push(stone)
         except:
             pass
 
         if(from_spike == "J"):
-            stone = current_player.jail.pop()
+            stone = self.current_player.jail.pop()
         else:
             stone = self.spike_list[from_spike].pop()
 
         if(to_spike == "H"):
-            current_player.home.push(stone)
+            self.current_player.home.push(stone)
         else:
             self.spike_list[to_spike].push(stone)
 
@@ -279,4 +367,65 @@ class Backgammon:
         print("Player2:")
         input("Press any key...")
         self.run()
-        
+
+    def auto_save(self):
+        """
+        Saves the current state of the game.
+        """
+        # Initialize save dictionary
+        save = {'player_one': {'stones': []}, 'player_two': {'stones': []}, 'rollsLeft': [], 'current': "", 'gamemode': 0}
+
+        # Add rolled dice, current player, and game mode to the save dictionary
+        save['rollsLeft'] = self.rolled
+        save['current'] = self.current_player.symbol
+        save['gamemode'] = self.mode
+
+        # Get unique spikes for each player and save their history
+        uniqueSpikes = [
+            self.unique(self.player_one.spikes), 
+            self.unique(self.player_two.spikes) ]
+        self.saveHistory(self.player_one, uniqueSpikes[0], save['player_one'])
+        self.saveHistory(self.player_two, uniqueSpikes[1], save['player_two'])
+
+        # If there are too many saves, overwrite the oldest file
+        allSaves = os.listdir(self._saveFolder)
+        if len(allSaves) <= self._maxSaves:
+            if self._lastSave >= self._maxSaves:
+                self._lastSave = 0
+            with open(f"{self._saveFolder}/quicksave{self._lastSave}.json", "w") as writer:
+                writer.write(json.dumps(save))
+            self._lastSave += 1
+
+
+    def saveHistory(self, player, uniqueSpikes, jsonDictionary):
+        """
+        Saves the history of the stones in the given player's jail, home, or spike to a JSON dictionary.
+
+        Args:
+            player (Player): The player whose stones' history will be saved.
+            uniqueSpikes (list): A list of spike positions to save the stone history for.
+            jsonDictionary (dict): The JSON dictionary to add the history to.
+        """
+        # Loop through each unique spike position to save history for
+        for positions in uniqueSpikes:
+            tmp = []
+            # Get the appropriate list of stones based on the position
+            if positions == 'J':
+                stones = self.player.jail.memoryDump
+            elif positions == 'H':
+                stones = self.player.home.memoryDump
+            else:
+                stones = self.spike_list[positions].memoryDump
+            # Loop through each stone and add its history to the temp list
+            for stone in stones:
+                tmp.append(stone.history)
+            # Add the temp list to the JSON dictionary
+            jsonDictionary['stones'].append(tmp)
+
+
+    def unique(self, list):
+        temp = []
+        for item in list:
+            if not item in temp:
+                temp.append(item)
+        return temp

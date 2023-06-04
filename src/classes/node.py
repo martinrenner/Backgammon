@@ -13,6 +13,12 @@ class Node:
         self._index = index
 
     @property
+    def memoryDump(self):
+        dump = self._stones.dump()
+        return dump
+    
+
+    @property
     def stones(self):
         return self._stones
     
