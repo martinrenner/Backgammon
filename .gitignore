@@ -132,3 +132,5 @@ dmypy.json
 # VScode
 *.code-workspace
 
+# Custome save files
+quicksave*.json

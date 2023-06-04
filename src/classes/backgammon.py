@@ -24,6 +24,8 @@ class Backgammon:
         self.dice = Dice()
 
         self._saveFolder = "./saves"
+        self._maxSaves = 4
+        self._lastSave = 0
 
     def run(self):
         """
@@ -301,7 +303,12 @@ class Backgammon:
         player1 = self.unique(self.player_one.spikes)
         for positions in player1:
             tmp = []
-            stones = self.spike_list[positions].memoryDump
+            if positions == 'J':
+                stones = self.player_one.jail.memoryDump
+            elif positions == 'H':
+                stones = self.player_one.home.memoryDump
+            else:
+                stones = self.spike_list[positions].memoryDump
             for stone in stones:
                 tmp.append(stone.history)
             save['player_one']['stones'].append(tmp)
@@ -309,15 +316,23 @@ class Backgammon:
         player2 = self.unique(self.player_two.spikes)
         for positions in player2:
             tmp = []
-            stones = self.spike_list[positions].memoryDump
+            if positions == 'J':
+                stones = self.player_two.jail.memoryDump
+            elif positions == 'H':
+                stones = self.player_two.home.memoryDump
+            else:
+                stones = self.spike_list[positions].memoryDump
             for stone in stones:
                 tmp.append(stone.history)
             save['player_two']['stones'].append(tmp)
-
-        with open(f"{self._saveFolder}/quicksave.json", "w") as writer:
-            writer.write(json.dumps(save))
-
-
+        
+        allSaves = os.listdir(self._saveFolder)
+        if len(allSaves) <= self._maxSaves:
+            if self._lastSave >= self._maxSaves:
+                self._lastSave = 0
+            with open(f"{self._saveFolder}/quicksave{self._lastSave}.json", "w") as writer:
+                writer.write(json.dumps(save))
+            self._lastSave += 1
 
     def unique(self, list):
         temp = []
