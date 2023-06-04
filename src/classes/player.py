@@ -92,8 +92,8 @@ class Player(ABC):
         self._last_round_moves = ""
 
     def checkWinType(self):
-        if self.opposite_player.home.stonesHome() == 0 and not self.opposite_player.jail.isEmpty():
-            return "WON (Backgammon)"
+        if self.opposite_player.home.stonesHome() == 0 and any(i in self.opposite_player.spikes for i in self.to_home_area) or not self.opposite_player.jail.isEmpty():
+                return "WON (Backgammon)"
         elif self.opposite_player.home.stonesHome() == 0:
             return "WON (Gammon)"
         elif self.opposite_player.home.stonesHome() >= 1 and self.opposite_player.home.stonesHome() < 15:
