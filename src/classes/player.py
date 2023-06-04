@@ -3,7 +3,7 @@ from src.classes.jail import Jail
 from src.classes.home import Home
 
 class Player(ABC):
-    def __init__(self, name, increase, symbol, color, toHomeArea):
+    def __init__(self, name, increase, symbol, color, to_home_area):
         self._spikes = []
         self._last_round_moves = ""
         self._name = name
@@ -15,7 +15,7 @@ class Player(ABC):
         self._color = color
         self._min = -1 if increase == "+" else 24
         self._max = 24 if increase == "+" else -1
-        self._toHomeArea = toHomeArea
+        self._to_home_area = to_home_area
 
     @property
     def name(self):
@@ -62,8 +62,8 @@ class Player(ABC):
         return self._max
     
     @property
-    def toHomeArea(self):
-        return self._toHomeArea
+    def to_home_area(self):
+        return self._to_home_area
 
     @opposite_player.setter
     def opposite_player(self, player):
@@ -89,12 +89,3 @@ class Player(ABC):
     @abstractmethod
     def turn(self, possible_moves):
         ...
-
-    # @abstractmethod
-    # def moveToHome(self, stone):
-    #     ...
-
-    # @abstractmethod
-    # def moveStone(self):
-    #     ...
-    

@@ -2,8 +2,8 @@ from src.classes.player import Player
 from random import choice
 
 class AI(Player):
-    def __init__(self, name, increase, symbol, color, toHomeArea):
-        super().__init__(name, increase, symbol, color, toHomeArea)
+    def __init__(self, name, increase, symbol, color, to_home_area):
+        super().__init__(name, increase, symbol, color, to_home_area)
     
     def turn(self, possible_moves):
         """
@@ -17,11 +17,4 @@ class AI(Player):
         """
         chosen = choice(possible_moves)
         return chosen
-
-    # def moveStone(self):
-    #     ...
-
-    # def moveToHome(self, stone):
-    #     ...
-
         
