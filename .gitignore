@@ -134,3 +134,4 @@ dmypy.json
 
 # Custome save files
 quicksave*.json
+*.json

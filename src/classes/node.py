@@ -1,5 +1,6 @@
 from src.classes.stack import Stack
 
+
 class Node:
     """
     Node class
@@ -16,12 +17,11 @@ class Node:
     def memoryDump(self):
         dump = self._stones.dump()
         return dump
-    
 
     @property
     def stones(self):
         return self._stones
-    
+
     @property
     def index(self):
         return self._index
@@ -33,7 +33,7 @@ class Node:
         Parameters:
         stone (Any): stone to be added into stack
 
-        Returns: 
+        Returns:
         None
         """
         stone.player.addSpike(self._index)
@@ -44,7 +44,7 @@ class Node:
         """
         IsEmpty - determines whether node is empty or not
 
-        Returns: 
+        Returns:
         Bool - False if empty, True if not empty
         """
         return False if len(self.stones) else True
@@ -53,7 +53,7 @@ class Node:
         """
         len - return number of stones
 
-        Returns: 
+        Returns:
         Int - number of stones in the stack
         """
         return len(self.stones)

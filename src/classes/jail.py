@@ -2,12 +2,13 @@ from src.classes.node import Node
 from termcolor import colored
 from src.classes.colors import Colors
 
+
 class Jail(Node):
     """
     Jail class
     """
 
-    def __init__(self, index = "J"):
+    def __init__(self, index="J"):
         """
         Constructor - initialize home
         """
@@ -17,13 +18,13 @@ class Jail(Node):
         """
         Pop - pops stone from jail
 
-        Returns: 
+        Returns:
         Any - removed item
         """
         stone = self.stones.pop()
         stone.player.popSpike(self._index)
         return stone
-    
+
     def peek(self):
         """
         Peek - returns the item at the top of jail
@@ -32,7 +33,7 @@ class Jail(Node):
         Any - last added item
         """
         return self.stones.peek()
-    
+
     def __str__(self):
         try:
             player = self.stones.peek().player

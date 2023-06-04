@@ -1,9 +1,14 @@
-from abc import ABC,abstractmethod #abstract class
+from abc import ABC, abstractmethod  # abstract class
 from src.classes.jail import Jail
 from src.classes.home import Home
 
+
 class Player(ABC):
-    def __init__(self, name, increase, symbol, color, toHomeArea):
+    """
+    Player class
+    """
+
+    def __init__(self, name, increase, symbol, color, to_home_area):
         self._spikes = []
         self._last_round_moves = ""
         self._name = name
@@ -15,12 +20,12 @@ class Player(ABC):
         self._color = color
         self._min = -1 if increase == "+" else 24
         self._max = 24 if increase == "+" else -1
-        self._toHomeArea = toHomeArea
+        self._to_home_area = to_home_area
 
     @property
     def name(self):
         return self._name
-    
+
     @property
     def last_round_moves(self):
         return self._last_round_moves
@@ -32,11 +37,11 @@ class Player(ABC):
     @property
     def home(self):
         return self._home
-    
+
     @property
     def jail(self):
         return self._jail
-    
+
     @property
     def opposite_player(self):
         return self._opposite_player
@@ -44,11 +49,11 @@ class Player(ABC):
     @property
     def color(self):
         return self._color.name
-    
+
     @property
     def symbol(self):
         return self._symbol
-    
+
     @property
     def increase(self):
         return self._increase
@@ -56,14 +61,14 @@ class Player(ABC):
     @property
     def min(self):
         return self._min
-    
+
     @property
     def max(self):
         return self._max
-    
+
     @property
-    def toHomeArea(self):
-        return self._toHomeArea
+    def to_home_area(self):
+        return self._to_home_area
 
     @opposite_player.setter
     def opposite_player(self, player):
@@ -79,7 +84,7 @@ class Player(ABC):
 
     def addSpike(self, spike):
         self._spikes.append(spike)
-    
+
     def popSpike(self, spike):
         self._spikes.remove(spike)
 
@@ -89,12 +94,3 @@ class Player(ABC):
     @abstractmethod
     def turn(self, possible_moves):
         ...
-
-    # @abstractmethod
-    # def moveToHome(self, stone):
-    #     ...
-
-    # @abstractmethod
-    # def moveStone(self):
-    #     ...
-    
