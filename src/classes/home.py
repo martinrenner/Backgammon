@@ -26,6 +26,9 @@ class Home(Node):
         Bool - False unless all stones are home, otherwise True
         """
         return False if len(self.stones) < self._sumOfAllStones else True
+    
+    def stonesHome(self):
+        return len(self.stones)
 
     def __str__(self):
         try:
