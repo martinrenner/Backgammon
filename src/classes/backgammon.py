@@ -202,7 +202,7 @@ class Backgammon:
                     player.home.push(newStone)
                 else:
                     # Otherwise, push the stone to the spike corresponding to the last position
-                    spike_list[last].push(newStone)
+                    self.spike_list[last].push(newStone)
 
 
     def create_stones(self):
@@ -411,9 +411,9 @@ class Backgammon:
             tmp = []
             # Get the appropriate list of stones based on the position
             if positions == 'J':
-                stones = self.player.jail.memoryDump
+                stones = player.jail.memoryDump
             elif positions == 'H':
-                stones = self.player.home.memoryDump
+                stones = player.home.memoryDump
             else:
                 stones = self.spike_list[positions].memoryDump
             # Loop through each stone and add its history to the temp list
