@@ -3,6 +3,10 @@ class Stone():
         self._player = player
         self._history = []
     
+    
+    def setHistory(self, history):
+        self._history = history
+
     @property    
     def player(self):
         return self._player

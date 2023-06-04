@@ -13,8 +13,8 @@ class Player(ABC):
         self._increase = increase
         self._symbol = symbol
         self._color = color
-        self._min = -1
-        self._max = 24
+        self._min = -1 if increase == "+" else 24
+        self._max = 24 if increase == "+" else -1
         self._toHomeArea = toHomeArea
 
     @property

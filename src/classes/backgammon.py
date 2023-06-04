@@ -26,6 +26,8 @@ class Backgammon:
         self._saveFolder = "./saves"
         self._maxSaves = 4
         self._lastSave = 0
+        self.current_player = None
+        self.rolled = []
 
     def run(self):
         """
@@ -36,17 +38,20 @@ class Backgammon:
         If any other value is entered, the function will exit. 
         The function then creates stones and starts the game.
         """
-        mode = self.menu()
+        self.mode = self.menu()
         self.clear_console()
-        if mode == 0:
+
+        self.player_one = Human("PLAYER 1", "+", "X", Colors.red, [18,19,20,21,22,23,"H"])
+
+        if self.mode == 0:
             # Player vs Player
-            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, [18,19,20,21,22,23,"H"])
-            self.player_two = Human("PLAYER 2", "-", "Y", Colors.blue, [0,1,2,3,4,5,"H"])
-        elif mode == 1:
+            self.setPlayerTwo("human")
+        elif self.mode == 1:
             # Player vs AI
-            self.player_one = Human("PLAYER 1", "+", "X", Colors.red, [18,19,20,21,22,23,"H"])
-            self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, [0,1,2,3,4,5,"H"])
-        elif mode == 2:
+            self.setPlayerTwo("AI")
+            
+            
+        elif self.mode == 2:
             # LOAD GAME
             print("Listing all save files: " )
             print("-----------------------")
@@ -54,17 +59,76 @@ class Backgammon:
             for index in range(0, len(files)):
                 file = files[index].split(".")[0]
                 print(f"{index}) - {file}") 
+            self.memory = 0
+            while self.memory == 0:
+                try:
+                    choice = int(input("Select savefile: "))
+                    with open(f"{self._saveFolder}/{files[choice]}", "r") as reader:
+                        loader = json.load(reader)
+                        self.memory = loader
+                except:
+                    print(f"Invalid choice. Please select number between 0 - {len(files)-1}")
             
-            exit(0)
-            ...
+            if self.memory['gamemode'] == 0:
+                self.setPlayerTwo('human')
+            else:
+                self.setPlayerTwo('AI')
+
+            players = {'X': self.player_one, 'Y': self.player_two}
+            self.current_player = players[self.memory['current']]
+
+            self.rolled = self.memory['rollsLeft']
+
+            # generate stones for player One
+            for spike in self.memory['player_one']['stones']:
+                for stone in spike:
+                    newStone = Stone(players['X'])
+                    last = stone.pop(-1)
+                    newStone.setHistory(stone)
+                    if last == "J":
+                        self.player_one.jail.push(newStone)
+                    elif last == "H":
+                        self.player_one.home.push(newStone)
+                    else:
+                        self.spike_list[last].push(newStone)
+
+            for spike in self.memory['player_two']['stones']:
+                for stone in spike:
+                    newStone = Stone(players['Y'])
+                    last = stone.pop(-1)
+                    newStone.setHistory(stone)
+                    if last == "J":
+                        self.player_two.jail.push(newStone)
+                    elif last == "H":
+                        self.player_two.home.push(newStone)
+                    else:
+                        self.spike_list[last].push(newStone)
+
+
+            print(self.memory)
+            input()
         else:
             exit()
 
+        if self.mode < 2:
+            self.create_stones()
+        else:
+            self.mode = self.memory['gamemode']
+
+        if self.current_player == None:
+            self.current_player = self.player_two
+
         self.player_one.opposite_player = self.player_two
         self.player_two.opposite_player = self.player_one
-
-        self.create_stones()
+        
         self.start_game()
+
+    def setPlayerTwo(self, type):
+        playerTwo = None
+        if type == "AI":
+            self.player_two = AI("PLAYER 2", "-", "Y", Colors.blue, [0,1,2,3,4,5,"H"])
+        else:
+            self.player_two = Human("PLAYER 2", "-", "Y", Colors.blue, [0,1,2,3,4,5,"H"])
 
     def start_game(self):
         """
@@ -73,16 +137,18 @@ class Backgammon:
         Returns: 
         None
         """
-        self.current_player = self.player_two
+        
         while not self.current_player.home.allStonesHome():
-            self.current_player = self.current_player.opposite_player
-            self.current_player.resetLastRoundMove()
-            self.rolled = self.roll_double_dice()
+            if not self.rolled:
+                self.current_player = self.current_player.opposite_player
+                self.current_player.resetLastRoundMove()
+                self.rolled = self.roll_double_dice()
             while self.rolled:
                 self.game_layout()
                 possible_moves = self.all_possible_moves()
                 if not possible_moves:
                     self.current_player.last_round_moves += "[No possible move]"
+                    self.rolled = []
                     break
                 from_spike, roll_choice, to_spike = self.current_player.turn(possible_moves)
                 self.current_player.last_round_moves += f"[{from_spike} -> {to_spike} ({roll_choice})], "
@@ -294,11 +360,12 @@ class Backgammon:
 
     def auto_save(self):
         print("GAME SAVED")
-        save = {'player_one': {'stones': []}, 'player_two': {'stones': []}, 'rollsLeft': [], 'current': "" }
+        save = {'player_one': {'stones': []}, 'player_two': {'stones': []}, 'rollsLeft': [], 'current': "", 'gamemode': 0}
         #save['player_one']['spikes'] = self.player_one.spikes
         #save['player_two']['spikes'] = self.player_two.spikes
         save['rollsLeft'] = self.rolled
         save['current'] = self.current_player.symbol
+        save['gamemode'] = self.mode
 
         player1 = self.unique(self.player_one.spikes)
         for positions in player1:
