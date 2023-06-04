@@ -367,8 +367,8 @@ class Backgammon:
         print("BACKGAMMON GAME")
         print("----------------------------------------")
         print("Statistics:")
-        print("Player1:")
-        print("Player2:")
+        print(f"Player1: {self._player_one.checkWinType()}")
+        print(f"Player2: {self._player_two.checkWinType()}")
         input("Press Enter to countinue...")
         self.run()
 

@@ -91,6 +91,17 @@ class Player(ABC):
     def resetLastRoundMove(self):
         self._last_round_moves = ""
 
+    def checkWinType(self):
+        if self.opposite_player.home.stonesHome() == 0 and not self.opposite_player.jail.isEmpty():
+            return "WON (Backgammon)"
+        elif self.opposite_player.home.stonesHome() == 0:
+            return "WON (Gammon)"
+        elif self.opposite_player.home.stonesHome() >= 1 and self.opposite_player.home.stonesHome() < 15:
+            return "WON (Game)"
+        else:
+            return "LOST"
+
     @abstractmethod
     def turn(self, possible_moves):
         ...
+        
