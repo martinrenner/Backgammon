@@ -26,6 +26,7 @@ class Backgammon:
         self._saveFolder = "./saves"
         self._maxSaves = 4
         self._lastSave = 0
+        
         self.current_player = None
         self.rolled = []
 
@@ -80,33 +81,12 @@ class Backgammon:
             self.rolled = self.memory['rollsLeft']
 
             # generate stones for player One
-            for spike in self.memory['player_one']['stones']:
-                for stone in spike:
-                    newStone = Stone(players['X'])
-                    last = stone.pop(-1)
-                    newStone.setHistory(stone)
-                    if last == "J":
-                        self.player_one.jail.push(newStone)
-                    elif last == "H":
-                        self.player_one.home.push(newStone)
-                    else:
-                        self.spike_list[last].push(newStone)
+            self.load_stones(self.player_one, self.memory['player_one']['stones'])
+            self.load_stones(self.player_two, self.memory['player_two']['stones'])
 
-            for spike in self.memory['player_two']['stones']:
-                for stone in spike:
-                    newStone = Stone(players['Y'])
-                    last = stone.pop(-1)
-                    newStone.setHistory(stone)
-                    if last == "J":
-                        self.player_two.jail.push(newStone)
-                    elif last == "H":
-                        self.player_two.home.push(newStone)
-                    else:
-                        self.spike_list[last].push(newStone)
-
-
-            print(self.memory)
-            input()
+            # debug
+            # print(self.memory)
+            # input()
         else:
             exit()
 
@@ -194,6 +174,36 @@ class Backgammon:
         None
         """
         system('cls' if name == 'nt' else 'clear')
+
+    def load_stones(self, player, memory):
+        """
+        Load stones from memory onto the board.
+    
+        Args:
+            player (Player): The player who owns the stones.
+            memory (list): A list of lists representing the memory of the board.
+    
+        Returns:
+            None
+        """
+    
+        for spike in memory:
+            # Iterate over each spike in memory
+            for stone in spike:
+                # Iterate over each stone in the spike
+                newStone = Stone(player)
+                last = stone.pop(-1)
+                newStone.setHistory(stone)
+                if last == "J":
+                    # If the last position is J, push the stone to the jail stack
+                    player.jail.push(newStone)
+                elif last == "H":
+                    # If the last position is H, push the stone to the home stack
+                    player.home.push(newStone)
+                else:
+                    # Otherwise, push the stone to the spike corresponding to the last position
+                    spike_list[last].push(newStone)
+
 
     def create_stones(self):
         """
@@ -359,40 +369,25 @@ class Backgammon:
         self.run()
 
     def auto_save(self):
-        print("GAME SAVED")
+        """
+        Saves the current state of the game.
+        """
+        # Initialize save dictionary
         save = {'player_one': {'stones': []}, 'player_two': {'stones': []}, 'rollsLeft': [], 'current': "", 'gamemode': 0}
-        #save['player_one']['spikes'] = self.player_one.spikes
-        #save['player_two']['spikes'] = self.player_two.spikes
+
+        # Add rolled dice, current player, and game mode to the save dictionary
         save['rollsLeft'] = self.rolled
         save['current'] = self.current_player.symbol
         save['gamemode'] = self.mode
 
-        player1 = self.unique(self.player_one.spikes)
-        for positions in player1:
-            tmp = []
-            if positions == 'J':
-                stones = self.player_one.jail.memoryDump
-            elif positions == 'H':
-                stones = self.player_one.home.memoryDump
-            else:
-                stones = self.spike_list[positions].memoryDump
-            for stone in stones:
-                tmp.append(stone.history)
-            save['player_one']['stones'].append(tmp)
+        # Get unique spikes for each player and save their history
+        uniqueSpikes = [
+            self.unique(self.player_one.spikes), 
+            self.unique(self.player_two.spikes) ]
+        self.saveHistory(self.player_one, uniqueSpikes[0], save['player_one'])
+        self.saveHistory(self.player_two, uniqueSpikes[1], save['player_two'])
 
-        player2 = self.unique(self.player_two.spikes)
-        for positions in player2:
-            tmp = []
-            if positions == 'J':
-                stones = self.player_two.jail.memoryDump
-            elif positions == 'H':
-                stones = self.player_two.home.memoryDump
-            else:
-                stones = self.spike_list[positions].memoryDump
-            for stone in stones:
-                tmp.append(stone.history)
-            save['player_two']['stones'].append(tmp)
-        
+        # If there are too many saves, overwrite the oldest file
         allSaves = os.listdir(self._saveFolder)
         if len(allSaves) <= self._maxSaves:
             if self._lastSave >= self._maxSaves:
@@ -400,6 +395,33 @@ class Backgammon:
             with open(f"{self._saveFolder}/quicksave{self._lastSave}.json", "w") as writer:
                 writer.write(json.dumps(save))
             self._lastSave += 1
+
+
+    def saveHistory(self, player, uniqueSpikes, jsonDictionary):
+        """
+        Saves the history of the stones in the given player's jail, home, or spike to a JSON dictionary.
+
+        Args:
+            player (Player): The player whose stones' history will be saved.
+            uniqueSpikes (list): A list of spike positions to save the stone history for.
+            jsonDictionary (dict): The JSON dictionary to add the history to.
+        """
+        # Loop through each unique spike position to save history for
+        for positions in uniqueSpikes:
+            tmp = []
+            # Get the appropriate list of stones based on the position
+            if positions == 'J':
+                stones = self.player.jail.memoryDump
+            elif positions == 'H':
+                stones = self.player.home.memoryDump
+            else:
+                stones = self.spike_list[positions].memoryDump
+            # Loop through each stone and add its history to the temp list
+            for stone in stones:
+                tmp.append(stone.history)
+            # Add the temp list to the JSON dictionary
+            jsonDictionary['stones'].append(tmp)
+
 
     def unique(self, list):
         temp = []
